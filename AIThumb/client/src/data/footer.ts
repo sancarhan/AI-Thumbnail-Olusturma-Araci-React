@@ -2,29 +2,29 @@ import type { IFooter } from "../types";
 
 export const footerData: IFooter[] = [
     {
-        title: "Product",
+        title: "Sayfalar",
         links: [
-            { name: "Home", href: "#" },
-            { name: "Support", href: "#support" },
-            { name: "Pricing", href: "#pricing" },
-            { name: "Affiliate", href: "#affiliate" },
+            { name: "Ana Sayfa", href: "#" },
+            { name: "Oluştur", href: "#" },
+            { name: "Yeniden Oluştur", href: "#" },
+            { name: "Topluluk", href: "#" },
         ]
     },
     {
-        title: "Resources",
+        title: "Şirket",
         links: [
-            { name: "Company", href: "#company" },
-            { name: "Blogs", href: "#blogs" },
-            { name: "Community", href: "#community" },
-            { name: "Careers", href: "#careers" },
-            { name: "About", href: "#about" },
+            { name: "Hakkımızda", href: "#" },
+            { name: "İletişim", href: "#" },
+            { name: "Fiyatlandırma", href: "#" },
+            
         ]
     },
     {
-        title: "Legal",
+        title: "Yasal Bilgiler",
         links: [
-            { name: "Privacy", href: "#privacy" },
-            { name: "Terms", href: "#terms" },
+            { name: "Gizlilik Politikası", href: "#" },
+            { name: "Gizlilik Politikası", href: "#" },
+            { name: "İade Politikası", href: "#" },
         ]
     }
 ];

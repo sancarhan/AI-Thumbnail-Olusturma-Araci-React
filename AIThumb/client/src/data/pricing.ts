@@ -2,43 +2,49 @@ import type { IPricing } from "../types";
 
 export const pricingData: IPricing[] = [
     {
-        name: "Basic",
-        price: 29,
-        period: "month",
+        name: "Temel",
+        price: 450,
+        period: "500 Kredi",
         features: [
-            "Access to all basic courses",
-            "Community support",
-            "10 practice projects",
-            "Course completion certificate",
-            "Basic code review"
+            "50 Premium Yapay Zeka Thumbnail",
+            "Yeni başlayanlar için ideal",
+            "Tüm yapay zeka modellerine erişim",
+            "İndirmelerde filigran yok",
+            "Yüksek kalite",
+            "Ticari kullanım izni",
+            "Kredilerin süresi asla dolmaz"
+            
         ],
         mostPopular: false
     },
     {
         name: "Pro",
-        price: 79,
-        period: "month",
+        price: 850,
+        period: "1100 kredi",
         features: [
-            "Access to all Pro courses",
-            "Priority community support",
-            "30 practice projects",
-            "Course completion certificate",
-            "Advance code review",
-            "1-on-1 mentoring sessions",
-            "Job assistance"
+            "110 Premium Yapay Zeka Thumbnail",
+            "Orta seviye kullanıcılar için ideal",
+            "Tüm yapay zeka modellerine erişim",
+            "İndirmelerde filigran yok",
+            "Yüksek kalite",
+            "Ticari kullanım izni verilmiştir",
+            "Kredilerin süresi asla dolmaz"
         ],
         mostPopular: true
     },
     {
-        name: "Enterprise",
-        price: 199,
-        period: "month",
+        name: "Ultra",
+        price: 1400,
+        period: "2800 kredi",
         features: [
-            "Access to all courses",
-            "Dedicated support",
-            "Unlimited projects",
-            "Course completion certificate",
-            "Premium code review"
+            "280 Premium Yapay Zeka Thumbnail",
+            "Profesyoneller için en iyisi",
+            "Tüm yapay zeka modellerine erişim",
+            "İndirmelerde filigran yok",
+            "Yüksek kalite",
+            "Ticari kullanım izni verilmiştir",
+            "Kredilerin süresi asla dolmaz"
+        
         ],
         mostPopular: false
     }
