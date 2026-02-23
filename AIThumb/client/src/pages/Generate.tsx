@@ -1,10 +1,45 @@
+import { useState } from "react";
+import { useParams } from "react-router-dom"
+import type { IThumbnail } from "../assets/assets";
+import SoftBackdrop from "../components/SoftBackdrop";
 
 
 const Generate = () => {
+
+ const {id} = useParams();
+ const [title, setTitle] = useState('')
+ const [additionalDetails, setAdditionalDetails] = useState('')
+
+ const [thumbnail, setThumbnail] = useState<IThumbnail | null>(null)
+ const [loading, setLoading] = useState(false)
+
+
   return (
-    <div>
-      
-    </div>
+    <>
+      <SoftBackdrop/>
+      <div className="pt-24 min-h-screen">
+       <main className="max-w-6xl mx-auto px-4 sm:px-8 py-8 pb-28 lg:pb-8">
+        <div className="grid lg:grid-cols-[400px_1fr] gap-8">
+
+         {/* Sol Panel */}
+         <div className={`space-y-6 ${id && 'pointer-events-none'}`}>
+          <div className="p-6 rounded-2xl bg-white/8 border border-white/12 shadow-xl space-y-6">
+          <div>
+           <h2 className="text-xl font-bold text-zinc-100 mb-1">Thumbnail Oluşturun</h2>
+           <p className="text-sm text-zinc-400">Vizyonunuzu tanımlayın ve yapay zekanın onu hayata geçirmesine izin verin.</p>
+          </div>
+
+          <div></div>
+          </div>
+         </div>
+
+         {/* Sağ Panel */}
+         <div></div>
+
+        </div>
+       </main>
+      </div>
+    </>
   )
 }
 
