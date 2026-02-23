@@ -23,15 +23,15 @@ export default function Navbar() {
 
                 <div className="hidden md:flex items-center gap-8 transition duration-500">
 
-                    <Link to='/' className="hover:text-pink-500 transition">Anasayfa</Link>
-                    <Link to='/generate' className="hover:text-pink-500 transition">Oluşturmaya Başla</Link>
-                    <Link to='/my-generation' className="hover:text-pink-500 transition">Oluşturduklarım</Link>
-                    <Link to='#' className="hover:text-pink-500 transition">İletişim</Link>
+                    <Link to='/' className="hover:text-blue-500 transition">Anasayfa</Link>
+                    <Link to='/generate' className="hover:text-blue-500 transition">Oluşturmaya Başla</Link>
+                    <Link to='/my-generation' className="hover:text-blue-500 transition">Oluşturduklarım</Link>
+                    <Link to='#' className="hover:text-blue-500 transition">İletişim</Link>
 
                    
                 </div>
 
-                <button onClick={()=> navigate('/login')} className="hidden md:block px-6 py-2.5 bg-pink-600 hover:bg-pink-700 active:scale-95 transition-all rounded-full">
+                <button onClick={()=> navigate('/login')} className="hidden md:block px-6 py-2.5 bg-blue-600 hover:bg-blue-700 active:scale-95 transition-all rounded-full">
                     Başla
                 </button>
                 <button onClick={() => setIsOpen(true)} className="md:hidden">
@@ -45,7 +45,7 @@ export default function Navbar() {
                     <Link onClick={() => setIsOpen(false)} to='/my-generation' >Oluşturduklarım</Link>
                     <Link onClick={() => setIsOpen(false)} to='#'>İletişim</Link>
                     <Link onClick={() => setIsOpen(false)} to='/login'>Giriş</Link>
-                <button onClick={() => setIsOpen(false)} className="active:ring-3 active:ring-white aspect-square size-10 p-1 items-center justify-center bg-pink-600 hover:bg-pink-700 transition text-white rounded-md flex">
+                <button onClick={() => setIsOpen(false)} className="active:ring-3 active:ring-white aspect-square size-10 p-1 items-center justify-center bg-blue-600 hover:bg-blue-700 transition text-white rounded-md flex">
                     <XIcon />
                 </button>
             </div>
