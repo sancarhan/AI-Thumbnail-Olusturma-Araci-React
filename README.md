@@ -9,6 +9,15 @@
   <li>🎨 Görsel odaklı UI/UX</li>
 </ul>
 
+<h2>⚙️ Geliştirici Notları</h2>
+<ul>
+  <li>Component tabanlı mimari kullanılmıştır</li>
+  <li>Reusable React component yapısı</li>
+  <li>Async API yönetimi</li>
+  <li>Modern folder structure</li>
+  <li>Performans odaklı render yaklaşımı</li>
+</ul>
+
 <h2>🛠️ Kullanılan Teknolojiler</h2>
 
 <h3>Frontend</h3>
