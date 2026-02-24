@@ -28,6 +28,15 @@
 <h2>📄 Lisans</h2>
 <p>MIT License</p>
 
+<h2>🧱 Bu Projede Öğrendiklerim</h2>
+<ul>
+  <li>AI API entegrasyonu</li>
+  <li>React state yönetimi</li>
+  <li>Asenkron veri akışı yönetimi</li>
+  <li>Prompt tabanlı görsel üretim mantığı</li>
+  <li>Responsive UI geliştirme</li>
+</ul>
+
 <h2>💼 Geliştirici</h2>
 <ul>
   <li><strong>Oğuzhan Sancar</strong></li>
