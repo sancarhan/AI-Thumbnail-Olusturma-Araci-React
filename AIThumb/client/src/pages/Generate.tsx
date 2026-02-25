@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useParams } from "react-router-dom"
 import type { IThumbnail } from "../assets/assets";
 import SoftBackdrop from "../components/SoftBackdrop";
+import { button } from "motion/react-client";
 
 
 const Generate = () => {
@@ -29,7 +30,18 @@ const Generate = () => {
            <p className="text-sm text-zinc-400">Vizyonunuzu tanımlayın ve yapay zekanın onu hayata geçirmesine izin verin.</p>
           </div>
 
-          <div></div>
+          <div className="space-y-5">
+            
+          </div>
+
+          {/* Buton */}
+          {!id && (
+            <button className="text-[15px] w-full py-3.5 rounded-xl font-medium bg-linear-to-b from-blue-500 to-blue-600 hover:from-blue-700 disabled:cursor-not-allowed transition-colors">
+              {loading ? 'Oluşturuluyor...' : 'Thumbnail Oluşturuldu'}
+            </button>
+          )}
+
+
           </div>
          </div>
 
