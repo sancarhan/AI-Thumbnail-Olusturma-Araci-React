@@ -9,6 +9,15 @@
   <li>🎨 Görsel odaklı UI/UX</li>
 </ul>
 
+<h2>⚙️ Geliştirici Notları</h2>
+<ul>
+  <li>Component tabanlı mimari kullanılmıştır</li>
+  <li>Reusable React component yapısı</li>
+  <li>Async API yönetimi</li>
+  <li>Modern folder structure</li>
+  <li>Performans odaklı render yaklaşımı</li>
+</ul>
+
 <h2>🛠️ Kullanılan Teknolojiler</h2>
 
 <h3>Frontend</h3>
@@ -27,6 +36,15 @@
 </ul>
 <h2>📄 Lisans</h2>
 <p>MIT License</p>
+
+<h2>🧱 Bu Projede Öğrendiklerim</h2>
+<ul>
+  <li>AI API entegrasyonu</li>
+  <li>React state yönetimi</li>
+  <li>Asenkron veri akışı yönetimi</li>
+  <li>Prompt tabanlı görsel üretim mantığı</li>
+  <li>Responsive UI geliştirme</li>
+</ul>
 
 <h2>💼 Geliştirici</h2>
 <ul>
