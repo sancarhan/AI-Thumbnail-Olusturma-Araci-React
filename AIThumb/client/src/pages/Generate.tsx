@@ -39,6 +39,20 @@ const Generate = () => {
                 <span className="text-xs text-zinc-400">{title.length}/100</span>
               </div>
             </div>
+
+            {/* En Boy Oranı Seçici */}
+            {/* Stil Seçici */}
+            {/* Renk Seçici */}
+
+            {/* Detay */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium">
+                Ek İstemler <span className="text-zinc-400 text-xs">(Opsiyonel)</span>
+              </label>
+              <textarea value={additionalDetails} onChange={(e)=>setAdditionalDetails(e.target.value)} rows={3} placeholder="İstediğiniz özel unsurları, ruh halini veya stil tercihlerini ekleyin..."
+                className="w-full px-4 py-3 rounded-lg border border-white/10 bg-white/6 text-zinc-100 placeholder:text-zinc-400 focus: outline-none focus:ring-2 focus:ring-blue-500 resize-none"/>
+            </div>
+
           </div>
 
           {/* Buton */}
