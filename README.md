@@ -9,6 +9,12 @@
   <li>🎨 Görsel odaklı UI/UX</li>
 </ul>
 
+<ul>
+ <img width="400" height="400" alt="image" src="https://github.com/user-attachments/assets/7040b3cd-59d0-4441-a9ab-ccaa8a747f3c" />
+
+  
+</ul>
+
 <h2>⚙️ Geliştirici Notları</h2>
 <ul>
   <li>Component tabanlı mimari kullanılmıştır</li>
