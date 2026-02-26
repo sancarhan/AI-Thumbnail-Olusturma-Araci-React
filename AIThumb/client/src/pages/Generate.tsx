@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom"
-import type { IThumbnail } from "../assets/assets";
+import { colorSchemes, type AspectRatio, type IThumbnail, type ThumbnailStyle } from "../assets/assets";
 import SoftBackdrop from "../components/SoftBackdrop";
-import { button } from "motion/react-client";
+import AspectRatioSelector from "../components/AspectRatioSelector";
 
 
 const Generate = () => {
@@ -13,6 +13,12 @@ const Generate = () => {
 
  const [thumbnail, setThumbnail] = useState<IThumbnail | null>(null)
  const [loading, setLoading] = useState(false)
+
+ const [aspectRatios, setAspectRatio] = useState<AspectRatio>('16:9')
+ const [colorSchemeId, setColorSchemeId] = useState<string>(colorSchemes[0].id)
+ const [style, setStyle] = useState<ThumbnailStyle>('Bold & Graphic')
+
+ const [styleDropdownOpen, setStyleDropdownOpen] = useState(false)
 
 
   return (
@@ -41,6 +47,7 @@ const Generate = () => {
             </div>
 
             {/* En Boy Oranı Seçici */}
+            <AspectRatioSelector value={aspectRatios} onChange={setAspectRatio}/>
             {/* Stil Seçici */}
             {/* Renk Seçici */}
 
