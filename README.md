@@ -1,4 +1,12 @@
 ## https://prebuiltui.com/ adresinden hazır şablon ile oluşturuluyor
+
+<ul>
+  <li> AI Thumb benim yapmış olduğum bir parodi logo ve sayfadır, gerçek hayattan alınan bir logo veya isim değildir ❗ </li>
+<img width="376" height="72" alt="logo" src="https://github.com/user-attachments/assets/90de4990-b36a-4e7a-8a47-b04046ab5cae" />
+</ul>
+
+
+
 <h2>✨ Özellikler</h2>
 <ul>
   <li>🤖 AI destekli thumbnail üretimi</li>
@@ -59,3 +67,5 @@
   <li>💻 Full Stack Developer</li>
   <li>🌐 GitHub: <a href="https://github.com/sancarhan" target="_blank">github.com/sancarhan</a></li>
 </ul>
+
+
