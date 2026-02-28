@@ -5,6 +5,7 @@ import SoftBackdrop from "../components/SoftBackdrop";
 import AspectRatioSelector from "../components/AspectRatioSelector";
 import StyleSelector from "../components/StyleSelector";
 import ColorSchemeSelector from "../components/ColorSchemeSelector";
+import PreviewPanel from "../components/PreviewPanel";
 
 
 const Generate = () => {
@@ -16,7 +17,7 @@ const Generate = () => {
  const [thumbnail, setThumbnail] = useState<IThumbnail | null>(null)
  const [loading, setLoading] = useState(false)
 
- const [aspectRatios, setAspectRatio] = useState<AspectRatio>('16:9')
+ const [aspectRatio, setAspectRatio] = useState<AspectRatio>('16:9')
  const [colorSchemeId, setColorSchemeId] = useState<string>(colorSchemes[0].id)
  const [style, setStyle] = useState<ThumbnailStyle>('Bold & Graphic')
 
@@ -49,7 +50,7 @@ const Generate = () => {
             </div>
 
             {/* En Boy Oranı Seçici */}
-            <AspectRatioSelector value={aspectRatios} onChange={setAspectRatio}/>
+            <AspectRatioSelector value={aspectRatio} onChange={setAspectRatio}/>
             {/* Stil Seçici */}
             <StyleSelector value={style} onChange={setStyle} isOpen={styleDropdownOpen} setIsOpen={setStyleDropdownOpen}/>
 
@@ -79,7 +80,12 @@ const Generate = () => {
          </div>
 
          {/* Sağ Panel */}
-         <div></div>
+         <div>
+          <div className="p-6 rounded-2xl bg-white/8 border-white/10 shadow-xl">
+            <h2 className="text-lg font-semibold text-zinc-100 mb-4">Önizleme</h2>
+            <PreviewPanel thumbnail={thumbnail} isLoading={loading} aspectRatio={aspectRatio}/>
+          </div>
+         </div>
 
         </div>
        </main>
