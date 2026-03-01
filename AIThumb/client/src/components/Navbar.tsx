@@ -24,8 +24,8 @@ export default function Navbar() {
                 <div className="hidden md:flex items-center gap-8 transition duration-500">
 
                     <Link to='/' className="hover:text-blue-500 transition">Anasayfa</Link>
-                    <Link to='/generate' className="hover:text-blue-500 transition">Oluşturmaya Başla</Link>
-                    <Link to='/my-generation' className="hover:text-blue-500 transition">Oluşturduklarım</Link>
+                    <Link to='/generate' className="hover:text-blue-500 transition">Tasarıma Başla</Link>
+                    <Link to='/my-generation' className="hover:text-blue-500 transition">Tasarımlarım</Link>
                     <Link to='#' className="hover:text-blue-500 transition">İletişim</Link>
 
                    
@@ -41,8 +41,8 @@ export default function Navbar() {
 
             <div className={`fixed inset-0 z-100 bg-black/40 backdrop-blur flex flex-col items-center justify-center text-lg gap-8 md:hidden transition-transform duration-400 ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
                     <Link onClick={() => setIsOpen(false)} to='/'>Anasayfa </Link>
-                    <Link onClick={() => setIsOpen(false)} to='/generate'>Oluşturmaya Başla</Link>
-                    <Link onClick={() => setIsOpen(false)} to='/my-generation' >Oluşturduklarım</Link>
+                    <Link onClick={() => setIsOpen(false)} to='/generate'>Tasarıma Başla</Link>
+                    <Link onClick={() => setIsOpen(false)} to='/my-generation' >Tasarımlarım</Link>
                     <Link onClick={() => setIsOpen(false)} to='#'>İletişim</Link>
                     <Link onClick={() => setIsOpen(false)} to='/login'>Giriş</Link>
                 <button onClick={() => setIsOpen(false)} className="active:ring-3 active:ring-white aspect-square size-10 p-1 items-center justify-center bg-blue-600 hover:bg-blue-700 transition text-white rounded-md flex">
