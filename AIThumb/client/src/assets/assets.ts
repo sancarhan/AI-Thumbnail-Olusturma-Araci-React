@@ -61,7 +61,7 @@ export const dummyThumbnails = [
     {
         _id: "69451ff3c9ea67e4c930f6a6",
         userId: "6942b3bd2a93a220baa331b3",
-        title: "Top smartwatch under 1499",
+        title: "1499 TL altındaki en iyi akıllı saat",
         style: "Bold & Graphic",
         aspect_ratio: "16:9",
         color_scheme: "vibrant",
@@ -77,7 +77,7 @@ export const dummyThumbnails = [
     {
         _id: "69451d5bc9ea67e4c930f698",
         userId: "6942b3bd2a93a220baa331b3",
-        title: "Learn How to make 100k in 10 days",
+        title: "10 Günde 100.000 Dolar Kazanmayı Öğrenin",
         style: "Bold & Graphic",
         aspect_ratio: "16:9",
         color_scheme: "vibrant",
@@ -93,7 +93,7 @@ export const dummyThumbnails = [
     {
         _id: "6943fb409fa048268a04f105",
         userId: "6942b3bd2a93a220baa331b3",
-        title: "Learn NextJS 16 with a Project",
+        title: "Bir Projeyle NextJS 16 Öğren",
         style: "Bold & Graphic",
         aspect_ratio: "16:9",
         color_scheme: "vibrant",
@@ -109,7 +109,7 @@ export const dummyThumbnails = [
     {
         _id: "6943e8c763d3d5ec3e4f5c8c",
         userId: "6942b3bd2a93a220baa331b3",
-        title: "Learn how to use Photoshop",
+        title: "Photoshop Kullanmayı Öğren",
         style: "Bold & Graphic",
         aspect_ratio: "16:9",
         color_scheme: "vibrant",
@@ -125,7 +125,7 @@ export const dummyThumbnails = [
     {
         _id: "6943e2220611d25b40e529b3",
         userId: "6942b3bd2a93a220baa331b3",
-        title: "Make Burger in 30 min",
+        title: "30 Dakikada Burger Yap",
         style: "Photorealistic",
         aspect_ratio: "1:1",
         color_scheme: "vibrant",
@@ -139,7 +139,7 @@ export const dummyThumbnails = [
     {
         _id: "6943e04c0611d25b40e529ac",
         userId: "6942b3bd2a93a220baa331b3",
-        title: "Learn Full Stack Development",
+        title: "Full Stack Geliştirmeyi Öğren",
         style: "Bold & Graphic",
         aspect_ratio: "16:9",
         color_scheme: "vibrant",
@@ -153,7 +153,7 @@ export const dummyThumbnails = [
     {
         _id: "6943d68d5b9fed7040154a0f",
         userId: "6942b3bd2a93a220baa331b3",
-        title: "Learn ReactJS in 2 hours",
+        title: "2 Saatte ReactJS Öğren",
         style: "Bold & Graphic",
         aspect_ratio: "16:9",
         color_scheme: "ocean",
