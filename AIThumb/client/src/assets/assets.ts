@@ -226,7 +226,7 @@ export const yt_html = `
                         <a class="flex items-center gap-4 px-3 py-2 rounded-lg hover:bg-yt2"><i data-lucide="thumbs-up"></i> Liked videos</a>
                         <hr class="border-ytBorder" />
                         <p class="px-3 text-xs text-gray-400 uppercase">Subscriptions</p>
-                        <a target="_blank" href="https://www.linkedin.com/in/o%C4%9Fuzhan-sancar-3295b31aa/" class="flex items-center gap-4 px-3 py-2 rounded-lg hover:bg-yt2"> <img src="logoo.svg" class="rounded-full size-7" /> SancarhanYazılım </a>
+                        <a target="_blank" href="https://www.linkedin.com/in/o%C4%9Fuzhan-sancar-3295b31aa/" class="flex items-center gap-4 px-3 py-2 rounded-lg hover:bg-yt2"> <img src="https://media.licdn.com/dms/image/v2/D4D35AQGjbMqWdmPFVQ/profile-framedphoto-shrink_400_400/B4DZs1HXopJcAc-/0/1766122683204?e=1773176400&v=beta&t=J_dzuWYJVvfsUBIgGVd6tZSbFfHycKBQ7JOWEJLjefM" class="rounded-full size-7" /> SancarhanYazılım </a>
                         
                         <a class="flex items-center gap-4 px-3 py-2 rounded-lg hover:bg-yt2"> <img src="https://images.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png" class="rounded-full size-7" /> Google </a>
                     </nav>
