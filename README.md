@@ -61,6 +61,110 @@
   <li>Responsive UI geliştirme</li>
 </ul>
 
+<h1>🚀 AI Thumbnail Oluşturma Aracı — Backend</h1>
+
+<p>
+Bu klasör, AI destekli thumbnail oluşturma uygulamasının backend servislerini içerir.
+Frontend’den gelen istekleri işleyerek yapay zeka servisleri ile iletişim kurar ve üretilen görselleri kullanıcıya döner.
+</p>
+
+<h2>📌 Amaç</h2>
+<ul>
+  <li>Frontend’den gelen prompt isteklerini karşılamak</li>
+  <li>AI görsel üretim API’sine istek göndermek</li>
+  <li>Üretilen thumbnail verisini işlemek</li>
+  <li>Güvenli ve ölçeklenebilir API sunmak</li>
+</ul>
+
+<h2>✨ Özellikler</h2>
+<ul>
+  <li>🤖 AI API entegrasyonu</li>
+  <li>🔗 RESTful API yapısı</li>
+  <li>⚡ Hızlı ve asenkron istek yönetimi</li>
+  <li>🔐 Environment variable güvenliği</li>
+  <li>📡 Frontend ile tam uyumlu veri akışı</li>
+  <li>🧱 Modüler backend mimarisi</li>
+</ul>
+
+<h2>🛠️ Kullanılan Teknolojiler</h2>
+
+<h3>Backend</h3>
+<ul>
+  <li>Node.js</li>
+  <li>Express.js</li>
+  <li>TypeScript</li>
+  <li>JavaScript (ES6+)</li>
+  <li>Axios</li>
+  <li>Mongoose</li>
+</ul>
+
+<h3>AI &amp; Entegrasyon</h3>
+<ul>
+  <li>OpenAI API / Image Generation</li>
+  <li>REST API iletişimi</li>
+</ul>
+
+<h2>📦 Gerekli Kurulumlar</h2>
+<ul>
+  <li><code>npm init -y</code></li>
+  <li><code>npm install express cors dotenv</code></li>
+  <li><code>npm install mongoose</code></li>
+  <li><code>npm install -D typescript tsx @types/node ts-node @types/express nodemon @types/cors</code></li>
+  <li><code>npx tsc --init</code></li>
+</ul>
+
+<h2>📂 Proje Yapısı</h2>
+<ul>
+  <li>server/</li>
+  <li>routes/</li>
+  <li>controllers/</li>
+  <li>services/</li>
+  <li>utils/</li>
+  <li>app.ts / server.ts</li>
+  <li>package.json</li>
+</ul>
+
+<h2>🚀 Kurulum</h2>
+<ul>
+  <li>Server klasörüne gir: <code>cd AIThumb/server</code></li>
+  <li>Bağımlılıkları yükle: <code>npm install</code></li>
+  <li>Geliştirme modunda çalıştır: <code>npm run dev</code></li>
+</ul>
+
+<h2>🔐 Ortam Değişkenleri</h2>
+<ul>
+  <li>.env dosyası oluştur</li>
+  <li><code>OPENAI_API_KEY=your_api_key</code></li>
+  <li><code>PORT=5000</code></li>
+</ul>
+
+<h2>🔌 API Endpoint</h2>
+
+<h3>Thumbnail Oluştur</h3>
+<ul>
+  <li><strong>POST</strong> /api/thumbnail</li>
+  <li>Request Body: <code>{ "prompt": "YouTube thumbnail about AI" }</code></li>
+  <li>Response: <code>{ "imageUrl": "generated-image-url" }</code></li>
+</ul>
+
+<h2>🎮 Veri Akışı</h2>
+<ul>
+  <li>Frontend prompt gönderir</li>
+  <li>Backend isteği alır</li>
+  <li>OpenAI Image API çağrılır</li>
+  <li>Görsel URL’i döndürülür</li>
+  <li>Frontend ekranda gösterir</li>
+</ul>
+
+<h2>⚙️ Geliştirici Notları</h2>
+<ul>
+  <li>Async/await tabanlı istek yönetimi</li>
+  <li>Temiz katmanlı mimari</li>
+  <li>Hata yakalama mekanizması</li>
+  <li>Environment tabanlı yapılandırma</li>
+  <li>Ölçeklenebilir servis yapısı</li>
+</ul>
+
 <h2>💼 Geliştirici</h2>
 <ul>
   <li><strong>Oğuzhan Sancar</strong></li>
