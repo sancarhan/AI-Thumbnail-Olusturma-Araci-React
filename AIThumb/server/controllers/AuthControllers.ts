@@ -40,3 +40,38 @@ export const registerUser = async (req: Request, res: Response)=>{
  }
 }
 
+// Kullanıcı girişi için kontroller
+export const loginUser = async (req: Request, res: Response)=>{
+ try {
+  const { email, password} = req.body;
+
+  // Kullanıcıyı e-postayla bul
+  const user = await User.findOne({email});
+  if (!user) {
+   return res.status(400).json({message: 'Şifre veya email hatalı'})
+  }
+
+  const isPasswordCorrect = await bcrypt.compare(password, user.password)
+  if (!isPasswordCorrect) {
+   return res.status(400).json({message: 'Şifre veya email hatalı'})
+  }
+
+  // Oturumda kullanıcı verilerini ayarlama
+  req.session.isLoggedIn = true;
+  req.session.userId = user._id;
+
+  return res.json({
+   message: 'Giriş başarılı',
+   user: {
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+   }
+  })
+ } catch (error: any) {
+  console.log(error);
+  res.status(500).json({message: error.message})
+ }
+}
+
+// Kullanıcı için çıkış kontrolleri
