@@ -1,6 +1,10 @@
 import { Request, Response} from 'express';
 import Thumbnail from '../models/Thumbnail.js';
 import { GenerateContentConfig, HarmBlockThreshold, HarmCategory } from '@google/genai';
+import ai from '../configs/ai.js';
+import path from 'path';
+import fs from 'fs';
+import {v2 as cloudinary} from 'cloudinary';
 
 const stylePrompts = {
  'Bold & Graphic': 'Göz alıcı thumbnail, cesur tipografi, canlı renkler, etkileyici yüz ifadeleri, dramatik aydınlatma, yüksek kontrast, tıklamaya değer kompozisyon, profesyonel stil',
@@ -84,8 +88,53 @@ export const generateThumbnail = async (req: Request, res: Response)=>{
   prompt += `Thumbnail şu şekilde olmalıdır ${aspect_ratio}, görsel olarak etkileyici ve tıklama oranını maksimize edecek şekilde tasarlanmış. Kalın, profesyonel ve görmezden gelinmesi imkansız olsun.`
 
   // Yapay zeka modelini kullanarak görüntüyü oluşturun.
+  const response: any = await ai.models.generateContent({
+   model,
+   contents: [prompt],
+   config: generationConfig,
+  })
 
- } catch (error) {
+  if (!response?.candidates?.[0]?.content?.parts) {
+   
+   throw new Error('Beklenmeyen yanıt')
+
+  }
+
+  const parts = response.candidates[0].content.parts;
+
+  let finalBuffer: Buffer | null = null;
+  
+  for(const part of parts){
+   if (part.inlineData) {
+    finalBuffer = Buffer.from(part.inlineData.data, 'base64')
+   }
+  }
+
+  const filename = `final-output-${Date.now()}.png`;
+  const filePath = path.join('images', filename);
+
+  // Resimler dizini yoksa oluşturun.
+  fs.mkdirSync('images', {recursive: true})
+
+  // Son görüntüyü dosyaya yazın.
+  fs.writeFileSync(filePath, finalBuffer!);
+
+  const uploadResult = await cloudinary.uploader.upload(filePath, {resource_type: 'image'})
+
+   thumbnail.image_url = uploadResult.url;
+   thumbnail.isGenerating = false;
+   await thumbnail.save()
+
+   res.json({message: 'Thumbnail Oluşturuldu', thumbnail})
+
+   // Görsel silme
+   fs.unlinkSync(filePath)
+
+ 
+
+ } catch (error: any) {
+  console.log(error);
+  res.status(500).json({message: error.message});
   
  }
 }
