@@ -6,6 +6,7 @@ import type { INavLink } from "../types";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 
 export default function Navbar() {
+    const
     const [isOpen, setIsOpen] = useState(false);
     const navigate = useNavigate()
 
