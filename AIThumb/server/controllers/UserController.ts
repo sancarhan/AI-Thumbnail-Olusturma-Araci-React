@@ -1,6 +1,6 @@
 import { Request, Response} from 'express';
 import Thumbnail from '../models/Thumbnail.js';
-import { create } from 'node:domain';
+
 
 // Tüm kullanıcıların küçük resimlerini almak için denetleyiciler
 
@@ -10,7 +10,7 @@ export const getUsersThumbnails = async (req: Request, res: Response) =>{
 
   const {userId} = req.session;
 
-  const thumbnail = await Thumbnail.find({userId}).sort({createdAt: -1})
+  const thumbnail = await Thumbnail.find({userId}).sort({createdAt: 1})
   res.json({thumbnail})
 
 

@@ -20,15 +20,14 @@ await connectDB()
 const app = express();
 
 
+
 // Middleware
-app.use(cors())
-app.use(express.json());
-
-
 app.use(cors({
-    origin: ['http://localhost:5173','http://localhost:3000'],
+    origin: ['http://localhost:5173'],
     credentials: true
 }))
+
+app.use(express.json());
 
 app.use(session({
     secret: process.env.SESSION_SECRET as string,
@@ -39,17 +38,12 @@ app.use(session({
         mongoUrl: process.env.MONGODB_URI as string,
         collectionName: 'sessions'
     })
-     
-
 }))
-
-app.use(express.json())
 
 app.get('/', (req: Request, res: Response) => {
     res.send('Server Çalışıyor');
-    
-    
 });
+
 app.use('/api/auth', AuthRouter)
 app.use('/api/thumbnail', ThumbnailRouter)
 app.use('/api/user', UserRouter)
@@ -61,3 +55,4 @@ app.listen(port, () => {
 });
 
 console.log("Server Aktif");
+
