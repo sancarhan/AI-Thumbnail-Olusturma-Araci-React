@@ -1,12 +1,12 @@
 import { MenuIcon, XIcon } from "lucide-react";
 import { useState } from "react";
 import { motion } from "motion/react";
-import { navlinks } from "../data/navlinks";
-import type { INavLink } from "../types";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+
 
 export default function Navbar() {
-    const
+    const {isLoggedIn, user, logout} = useAuth()
     const [isOpen, setIsOpen] = useState(false);
     const navigate = useNavigate()
 
@@ -26,26 +26,58 @@ export default function Navbar() {
 
                     <Link to='/' className="hover:text-blue-500 transition">Anasayfa</Link>
                     <Link to='/generate' className="hover:text-blue-500 transition">Tasarıma Başla</Link>
-                    <Link to='/my-generation' className="hover:text-blue-500 transition">Tasarımlarım</Link>
+                    {
+                        isLoggedIn ? 
+                        <Link to='/my-generation' className="hover:text-blue-500 transition">Tasarımlarım</Link>
+
+                        :  <Link to='#' className="hover:text-blue-500 transition">Hakkımızda</Link>
+                    }
+                    
                     <Link to='#' className="hover:text-blue-500 transition">İletişim</Link>
 
                    
                 </div>
-
-                <button onClick={()=> navigate('/login')} className="hidden md:block px-6 py-2.5 bg-blue-600 hover:bg-blue-700 active:scale-95 transition-all rounded-full">
+                <div className="flex items-center gap-2">
+                    {isLoggedIn ? (
+                        <div className="relative group">
+                            <button className="rounded-full size-8 bg-white/20 border-2 border-white/10">
+                                {user?.name.charAt(0).toUpperCase()}
+                            </button>
+                            <div className="absolute hidden group-hover:block top-6 right-0 pt-4">
+                                <button onClick={()=>logout()} className="bg-white/20 border-2 border-white/10 px-5 py-1.5 rounded">
+                                    Çıkış
+                                </button>
+                            </div>
+                        </div>
+                    ) : (
+                         <button onClick={()=> navigate('/login')} className="hidden md:block px-6 py-2.5 bg-blue-600 hover:bg-blue-700 active:scale-95 transition-all rounded-full">
                     Başla
                 </button>
-                <button onClick={() => setIsOpen(true)} className="md:hidden">
+                    )}
+                    <button onClick={() => setIsOpen(true)} className="md:hidden">
                     <MenuIcon size={26} className="active:scale-90 transition" />
                 </button>
+                </div>
+
+               
+                
             </motion.nav>
 
             <div className={`fixed inset-0 z-100 bg-black/40 backdrop-blur flex flex-col items-center justify-center text-lg gap-8 md:hidden transition-transform duration-400 ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
                     <Link onClick={() => setIsOpen(false)} to='/'>Anasayfa </Link>
                     <Link onClick={() => setIsOpen(false)} to='/generate'>Tasarıma Başla</Link>
-                    <Link onClick={() => setIsOpen(false)} to='/my-generation' >Tasarımlarım</Link>
+                    {isLoggedIn ?  <Link onClick={() => setIsOpen(false)} to='/my-generation' >Tasarımlarım</Link> 
+                    : 
+                     <Link onClick={() => setIsOpen(false)} to='#' >Hakkımda</Link> 
+                    }
+                   
                     <Link onClick={() => setIsOpen(false)} to='#'>İletişim</Link>
+                    {isLoggedIn ?
+                    <button onClick={()=>{setIsOpen(false); logout()}}>Çıkış</button>    
+                    :
                     <Link onClick={() => setIsOpen(false)} to='/login'>Giriş</Link>
+                    }
+                    
                 <button onClick={() => setIsOpen(false)} className="active:ring-3 active:ring-white aspect-square size-10 p-1 items-center justify-center bg-blue-600 hover:bg-blue-700 transition text-white rounded-md flex">
                     <XIcon />
                 </button>

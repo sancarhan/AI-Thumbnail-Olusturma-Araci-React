@@ -11,6 +11,7 @@ import PreviewPanel from "../components/PreviewPanel";
 const Generate = () => {
 
  const {id} = useParams();
+ const;
  const [title, setTitle] = useState('')
  const [additionalDetails, setAdditionalDetails] = useState('')
 
