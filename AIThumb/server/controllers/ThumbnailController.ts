@@ -1,33 +1,32 @@
 import { Request, Response} from 'express';
 import Thumbnail from '../models/Thumbnail.js';
-import { GenerateContentConfig, HarmBlockThreshold, HarmCategory } from '@google/genai';
-import ai from '../configs/ai.js';
+import openai from '../configs/openai.js';
 import path from 'path';
 import fs from 'fs';
 import {v2 as cloudinary} from 'cloudinary';
 
-const stylePrompts = {
- 'Bold & Graphic': 'Göz alıcı thumbnail, cesur tipografi, canlı renkler, etkileyici yüz ifadeleri, dramatik aydınlatma, yüksek kontrast, tıklamaya değer kompozisyon, profesyonel stil',
+const stylePrompts: Record<string, string> = {
+ 'Bold & Graphic': 'Eye-catching thumbnail, bold typography, vibrant colors, impactful facial expressions, dramatic lighting, high contrast, click-worthy composition, professional style',
 
- 'Tech/Futuristic': 'fütüristik thumbnail, şık modern tasarım, dijital UI öğeleri, parlayan vurgular, holografik efektler, siber-teknoloji estetiği, keskin ışıklandırma, yüksek teknoloji atmosferi',
+ 'Tech/Futuristic': 'Futuristic thumbnail, sleek modern design, digital UI elements, glowing highlights, holographic effects, cyber-tech aesthetics, sharp lighting, high-tech atmosphere',
 
- 'Minimalist': 'minimalist thumbnail, temiz düzen, basit şekiller, sınırlı renk paleti, bol negatif alan, modern düz tasarım, net odak noktası',
+ 'Minimalist': 'Minimalist thumbnail, clean layout, simple shapes, limited color palette, ample negative space, modern flat design, clear focal point',
 
- 'Photorealistic': 'fotogerçekçi thumbnail, ultra gerçekçi ışıklandırma, doğal ten tonları, doğal an yakalama, DSLR tarzı fotoğrafçılık, yaşam tarzı gerçekçiliği, sığ alan derinliği',
+ 'Photorealistic': 'Photorealistic thumbnail, ultra-realistic lighting, natural skin tones, candid moment, DSLR-style photography, lifestyle realism, shallow depth of field',
 
- 'Illustrated': 'illüstrasyon tarzı thumbnail, özel dijital illüstrasyon, stilize karakterler, kalın konturlar, canlı renkler, yaratıcı çizgi film veya vektör sanat stili',
+ 'Illustrated': 'Illustrated thumbnail style, custom digital illustration, stylized characters, bold outlines, vibrant colors, creative cartoon or vector art style',
  
 }
 
-const clorSchemeDescriptions = {
- vibrant: 'canlı ve enerjik renkler, yüksek doygunluk, güçlü kontrastlar, dikkat çekici renk paleti',
- sunset: 'sıcak gün batımı tonları, turuncu pembe ve mor tonları, yumuşak geçişler, sinematik parıltı',
- forest: 'doğal yeşil tonları, toprak renkleri, sakin ve organik palet, ferah atmosfer',
- neon: 'neon parıltı efektleri, elektrik mavisi ve pembe tonları, cyberpunk ışıklandırma, yüksek kontrastlı parıltı',
- purple: 'mor ağırlıklı renk paleti, magenta ve menekşe tonları, modern ve şık atmosfer',
- monochrome: 'siyah ve beyaz renk düzeni, yüksek kontrast, dramatik ışıklandırma, zamansız estetik',
- ocean: 'serin mavi ve turkuaz tonları, su temalı renk paleti, ferah ve temiz atmosfer',
- pastel: 'yumuşak pastel renkler, düşük doygunluk, nazik tonlar, sakin ve dostane estetik', 
+const colorSchemeDescriptions: Record<string, string> = {
+ vibrant: 'vibrant and energetic colors, high saturation, strong contrast, eye-catching color palette',
+ sunset: 'warm sunset tones, orange pink and purple hues, soft transitions, cinematic glow',
+ forest: 'natural green tones, earth colors, calm and organic palette, fresh atmosphere',
+ neon: 'neon glow effects, electric blue and pink tones, cyberpunk lighting, high contrast glow',
+ purple: 'purple-dominant color palette, magenta and violet tones, modern and stylish atmosphere',
+ monochrome: 'black and white color scheme, high contrast, dramatic lighting, timeless aesthetic',
+ ocean: 'cool blue and turquoise tones, water-themed color palette, fresh and clean atmosphere',
+ pastel: 'soft pastel colors, low saturation, gentle tones, calm and friendly aesthetic', 
 }
 
 export const generateThumbnail = async (req: Request, res: Response)=>{
@@ -54,70 +53,55 @@ export const generateThumbnail = async (req: Request, res: Response)=>{
    isGenerating: true
   })
 
-  const model = 'gemini-3-pro-image-preview';
-
-  const generationConfig: GenerateContentConfig = {
-
-   maxOutputTokens: 32768,
-   temperature:1,
-   topP: 0.95,
-   responseModalities: ['IMAGE'],
-   imageConfig: {
-    aspectRatio: aspect_ratio || '16:9',
-    imageSize: '1K'
-   },
-   safetySettings: [
-    {category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.OFF},
-    {category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.OFF},
-    {category: HarmCategory. HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.OFF},
-    {category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.OFF},
-   ]
-
-  }
-
-  let prompt = `Create a ${stylePrompts[style as keyof typeof stylePrompts]} for: "${title}"`;
+  // Build the prompt for DALL-E
+  let prompt = `${stylePrompts[style as string] || style} for: "${title}"`;
 
   if (color_scheme) {
-   prompt += `Use a ${clorSchemeDescriptions[color_scheme as  keyof typeof clorSchemeDescriptions]} color scheme.`
+   prompt += `. Use a ${colorSchemeDescriptions[color_scheme as string]} color scheme.`
   }
 
   if (user_prompt) {
-   prompt += `Ek ayrıntılar: ${user_prompt}.`
+   prompt += `. Additional details: ${user_prompt}.`
   }
 
-  prompt += `Thumbnail şu şekilde olmalıdır ${aspect_ratio}, görsel olarak etkileyici ve tıklama oranını maksimize edecek şekilde tasarlanmış. Kalın, profesyonel ve görmezden gelinmesi imkansız olsun.`
+  prompt += ` The thumbnail should be ${aspect_ratio || '16:9'} aspect ratio, visually striking and designed to maximize click-through rate. Make it bold, professional and impossible to ignore.`
 
-  // Yapay zeka modelini kullanarak görüntüyü oluşturun.
-  const response: any = await ai.models.generateContent({
-   model,
-   contents: [prompt],
-   config: generationConfig,
+  // Add text overlay if requested
+  if (text_overlay) {
+    prompt += ` Include bold, readable text: "${title}"`;
+  }
+
+  console.log('Generating thumbnail with DALL-E, prompt:', prompt);
+
+  // Use DALL-E 3 for image generation
+  const response = await openai.images.generate({
+    model: "dall-e-3",
+    prompt: prompt,
+    size: "1792x1024", // 16:9 aspect ratio
+    quality: "standard",
+    n: 1,
   })
 
-  if (!response?.candidates?.[0]?.content?.parts) {
-   
-   throw new Error('Beklenmeyen yanıt')
+  console.log('DALL-E Response:', JSON.stringify(response, null, 2));
 
+  if (!response.data || !response.data[0]?.url) {
+   throw new Error('Invalid response from DALL-E - no image URL found')
   }
 
-  const parts = response.candidates[0].content.parts;
+  const imageUrl = response.data[0].url;
 
-  let finalBuffer: Buffer | null = null;
-  
-  for(const part of parts){
-   if (part.inlineData) {
-    finalBuffer = Buffer.from(part.inlineData.data, 'base64')
-   }
-  }
+  // Download the image from DALL-E
+  const imageResponse = await fetch(imageUrl);
+  const imageBuffer = Buffer.from(await imageResponse.arrayBuffer());
 
   const filename = `final-output-${Date.now()}.png`;
   const filePath = path.join('images', filename);
 
-  // Resimler dizini yoksa oluşturun.
+  // Create images directory if it doesn't exist
   fs.mkdirSync('images', {recursive: true})
 
-  // Son görüntüyü dosyaya yazın.
-  fs.writeFileSync(filePath, finalBuffer!);
+  // Write the image to file
+  fs.writeFileSync(filePath, imageBuffer);
 
   const uploadResult = await cloudinary.uploader.upload(filePath, {resource_type: 'image'})
 
@@ -127,14 +111,14 @@ export const generateThumbnail = async (req: Request, res: Response)=>{
 
    res.json({message: 'Thumbnail Oluşturuldu', thumbnail})
 
-   // Görsel silme
+   // Delete the local file
    fs.unlinkSync(filePath)
 
  
 
  } catch (error: any) {
-  console.log(error);
-  res.status(500).json({message: error.message});
+  console.error('Error generating thumbnail:', error);
+  res.status(500).json({message: error.message || 'Sunucu hatası oluştu'});
   
  }
 }
@@ -158,3 +142,4 @@ export const deleteThumbnail = async (req: Request, res: Response)=>{
  }
 
 }
+
