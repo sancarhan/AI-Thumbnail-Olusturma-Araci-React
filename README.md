@@ -172,4 +172,73 @@ Frontend’den gelen istekleri işleyerek yapay zeka servisleri ile iletişim ku
   <li>🌐 GitHub: <a href="https://github.com/sancarhan" target="_blank">github.com/sancarhan</a></li>
 </ul>
 
+## 🚀 Kurulum
+
+### Gereksinimler
+- Node.js v18+
+- MongoDB (yerel veya Atlas)
+- OpenAI API Key
+- Cloudinary Hesabı
+
+### Backend Kurulumu
+```bash
+cd server
+npm install
+```
+
+`.env` dosyası:
+```env
+PORT=5000
+MONGODB_URI=mongodb://localhost:27017/AIThumb
+SESSION_SECRET=guvenli_anahtar
+OPENAI_API_KEY=sk-...
+CLOUDINARY_CLOUD_NAME=...
+CLOUDINARY_API_KEY=...
+CLOUDINARY_API_SECRET=...
+```
+
+### Frontend Kurulumu
+```bash
+cd client
+npm install
+npm run dev
+```
+
+---
+
+## 🔧 Kullanılan Teknolojiler
+
+### Frontend
+- **React 19** - UI Framework
+- **Vite** - Build Tool
+- **Tailwind CSS 4** - Styling
+- **React Router DOM 7** - Routing
+- **Axios** - HTTP Client
+- **Motion** - Animations
+- **Lenis** - Smooth Scroll
+
+### Backend
+- **Express.js** - Web Framework
+- **TypeScript** - Type Safety
+- **MongoDB + Mongoose** - Database
+- **Express Session** - Session Management
+- **Bcrypt** - Password Hashing
+
+### AI & Services
+- **OpenAI DALL-E 3** - Image Generation
+- **Cloudinary** - Image Hosting
+
+---
+
+## 📄 Lisans
+
+MIT License
+
+
+
+
+
+
+
+
 
