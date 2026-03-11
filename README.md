@@ -5,6 +5,13 @@
 <img width="376" height="72" alt="logo" src="https://github.com/user-attachments/assets/90de4990-b36a-4e7a-8a47-b04046ab5cae" />
 </ul>
 
+<h2>💼 Geliştirici</h2>
+<ul>
+  <li><strong>Oğuzhan Sancar</strong></li>
+  <li>💻 Full Stack Developer</li>
+  <li>🌐 GitHub: <a href="https://github.com/sancarhan" target="_blank">github.com/sancarhan</a></li>
+</ul>
+
 
 
 <h2>✨ Özellikler</h2>
@@ -165,12 +172,7 @@ Frontend’den gelen istekleri işleyerek yapay zeka servisleri ile iletişim ku
   <li>Ölçeklenebilir servis yapısı</li>
 </ul>
 
-<h2>💼 Geliştirici</h2>
-<ul>
-  <li><strong>Oğuzhan Sancar</strong></li>
-  <li>💻 Full Stack Developer</li>
-  <li>🌐 GitHub: <a href="https://github.com/sancarhan" target="_blank">github.com/sancarhan</a></li>
-</ul>
+
 
 ## 🚀 Kurulum
 
