@@ -235,6 +235,141 @@ npm run dev
 MIT License
 
 
+# AIThumb - Yapay Zeka YouTube Thumbnail Oluşturucu
+
+AIThumb, OpenAI'nin DALL-E 3 modelini kullanarak profesyonel YouTube thumbnail'ları oluşturan tam yığın (full-stack) bir web uygulamasıdır.
+
+## 📁 Proje Mimarisi
+
+```
+AIThumb/
+├── client/                    # React frontend uygulaması
+│   ├── src/
+│   │   ├── assets/           # Görseller, tipler ve statik veriler
+│   │   ├── components/       # Yeniden kullanılabilir UI bileşenleri
+│   │   ├── configs/          # API konfigürasyonları
+│   │   ├── context/          # React Context (AuthContext)
+│   │   ├── data/             # Statik veri dosyaları
+│   │   ├── pages/            # Sayfa bileşenleri
+│   │   ├── sections/         # Büyük UI bölümleri
+│   │   ├── App.tsx           # Ana uygulama bileşeni
+│   │   ├── main.tsx          # Uygulama giriş noktası
+│   │   ├── globals.css       # Global stiller
+│   │   └── types.ts          # TypeScript tip tanımları
+│   │
+├── server/                    # Express backend sunucusu
+│   ├── configs/              # Veritabanı ve AI konfigürasyonları
+│   ├── controllers/         # Route kontrolcüleri (iş mantığı)
+│   ├── middlewares/         # Ara yazılımlar (auth kontrolü)
+│   ├── models/              # Mongoose veritabanı modelleri
+│   ├── routes/              # API rotaları
+│   └── server.ts            # Sunucu giriş noktası
+│
+└── README.md
+```
+
+---
+
+## 🖥️ Client (Frontend) Yapısı
+
+### Ana Dosyalar
+
+#### `client/src/main.tsx`
+React uygulamasının giriş noktasıdır. `App` bileşenini render eder ve provider'ları sarmalar.
+
+```tsx
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App.tsx'
+import './globals.css'
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+)
+```
+
+#### `client/src/App.tsx`
+Uygulamanın ana yönlendirme ve layout bileşenidir. React Router ile sayfa geçişlerini yönetir.
+
+```tsx
+export default function App() {
+  const { pathname } = useLocation();
+
+  // Sayfa değiştiğinde en üste kaydır
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return (
+    <>
+      <Toaster />           {/* Bildirim sistemi */}
+      <LenisScroll />       {/* Yumuşak kaydırma */}
+      <Navbar />            {/* Navigasyon */}
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/generate" element={<Generate />} />
+        <Route path="/generate/:id" element={<Generate />} />
+        <Route path="/my-generation" element={<MyGeneration />} />
+        <Route path="/preview" element={<YtPreview />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+      <Footer />
+    </>
+  );
+}
+```
+
+---
+
+### Context (Durum Yönetimi)
+
+#### `client/src/context/AuthContext.tsx`
+Kullanıcı kimlik doğrulama durumunu yöneten React Context bileşenidir.
+
+**Fonksiyonlar:**
+- `signUp({name, email, password})` - Yeni kullanıcı kaydı
+- `login({email, password})` - Kullanıcı girişi
+- `logout()` - Kullanıcı çıkışı
+- `fetchUser()` - Oturumdaki kullanıcıyı doğrulama
+
+```tsx
+interface AuthContextProps {
+  isLoggedIn: boolean;
+  setIsLoggedIn: (isLoggedIn: boolean) => void;
+  user: IUser | null;
+  setUser: (user: IUser | null) => void;
+  login: (user: { email: string; password: string }) => Promise<void>;
+  signUp: (user: { name: string; email: string; password: string }) => Promise<void>;
+  logout: () => Promise<void>;
+}
+```
+
+**Kullanım:**
+```tsx
+const { isLoggedIn, user, login, signUp, logout } = useAuth();
+```
+
+---
+
+### Sayfalar (Pages)
+
+#### `client/src/pages/Generate.tsx`
+Thumbnail oluşturma sayfası. Kullanıcının başlık, stil, renk şeması ve en-boy oranı seçerek thumbnail oluşturmasını sağlar.
+
+**Bileşen Durumu (State):**
+```tsx
+const [title, setTitle] = useState("");                    // Thumbnail başlığı
+const [additionalDetails, setAdditionalDetails] = useState(""); // Ek detaylar
+const [thumbnail, setThumbnail] = useState<IThumbnail | null>(null); // Oluşturulan thumbnail
+const [loading, setLoading] = useState(false);            // Yükleniyor durumu
+const [aspectRatio, setAspectRatio] = useState<AspectRatio>("16:9"); // En-boy oranı
+const [colorSchemeId, setColorSchemeId] = useState<string>(colorSchemes[0].id); // Renk şeması
+const [style, setStyle] = useState<ThumbnailStyle>("Bold & Graphic"); // Stil
+```
+
+
 **Ana Fonksiyonlar:**
 
 1. `handleGenerate()` - Thumbnail oluşturma isteği gönderir
