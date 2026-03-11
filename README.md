@@ -235,7 +235,172 @@ npm run dev
 MIT License
 
 
+**Ana Fonksiyonlar:**
 
+1. `handleGenerate()` - Thumbnail oluşturma isteği gönderir
+```tsx
+const handleGenerate = async () => {
+  if (!isLoggedIn) return toast.error('Thumbnail oluşturmak için giriş yapın.') 
+  if (!title.trim()) return toast.error('Başlık gerekli') 
+  
+  setLoading(true)
+  
+  const api_payload = {
+    title,
+    prompt: additionalDetails,
+    style,
+    aspect_ratio: aspectRatio,
+    color_scheme: colorSchemeId,
+    text_overlay: true,
+  }
+  
+  try {
+    const {data} = await api.post('/api/thumbnail/generate', api_payload);
+    if(data.thumbnail){
+      navigate('/generate/' + data.thumbnail._id);
+      toast.success(data.message)
+    }
+  } catch (error: any) {
+    toast.error(error?.response?.data?.message || 'Thumbnail oluşturulamadı');
+  } finally {
+    setLoading(false);
+  }
+};
+```
+
+2. `fetchThumbnail()` - ID'ye göre thumbnail detaylarını getirir
+```tsx
+const fetchThumbnail = async () => {
+  try {
+    const {data} = await api.get('/api/user/thumbnail/${id}');
+    setThumbnail(data?.thumbnail as IThumbnail);
+    setAdditionalDetails(data?.thumbnail?.user_prompt)
+    setTitle(data?.thumbnail?.title)
+    // ... diğer state güncellemeleri
+  } catch (error: any) {
+    toast.error(error?.response?.data?.message || error.message)
+  }
+};
+```
+
+**Kullanılan Bileşenler:**
+- `SoftBackdrop` - Arka plan efekti
+- `AspectRatioSelector` - En-boy oranı seçici
+- `StyleSelector` - Thumbnail stili seçici
+- `ColorSchemeSelector` - Renk şeması seçici
+- `PreviewPanel` - Önizleme paneli
+
+---
+
+### API Konfigürasyonu
+
+#### `client/src/configs/api.ts`
+Axios tabanlı HTTP istemcisi. Backend API ile iletişim kurar.
+
+```tsx
+import axios from "axios";
+
+const api = axios.create({
+  baseURL: import.meta.env.VITE_BASE_URL || "http://localhost:3000",
+  withCredentials: true,  // Çerezlerin gönderilmesi için
+});
+
+export default api;
+```
+
+---
+
+### Assets ve Veri Yapıları
+
+#### `client/src/assets/assets.ts`
+Uygulamanın merkezi veri ve tip tanımlarını içerir.
+
+**Tip Tanımları:**
+```ts
+export type AspectRatio = "16:9" | "1:1" | "9:16";
+export type ThumbnailStyle = "Bold & Graphic" | "Tech/Futuristic" | "Minimalist" | "Photorealistic" | "Illustrated";
+
+export interface IThumbnail {
+    _id: string;
+    userId: string;
+    title: string;
+    style: ThumbnailStyle;
+    aspect_ratio: AspectRatio;
+    color_scheme: string;
+    text_overlay: boolean;
+    image_url?: string;
+    prompt_used?: string;
+    user_prompt?: string;
+    isGenerating?: boolean;
+    createdAt?: Date;
+}
+```
+
+**Renk Şemaları:**
+```ts
+export const colorSchemes = [
+    { id: "vibrant", name: "Vibrant", colors: ["#FF6B6B", "#4ECDC4", "#45B7D1"] },
+    { id: "sunset", name: "Sunset", colors: ["#FF8C42", "#FF3C38", "#A23B72"] },
+    { id: "ocean", name: "Ocean", colors: ["#0077B6", "#00B4D8", "#90E0EF"] },
+    { id: "forest", name: "Forest", colors: ["#2D6A4F", "#40916C", "#95D5B2"] },
+    { id: "purple", name: "Purple Dream", colors: ["#7B2CBF", "#9D4EDD", "#C77DFF"] },
+    { id: "monochrome", name: "Monochrome", colors: ["#212529", "#495057", "#ADB5BD"] },
+    { id: "neon", name: "Neon", colors: ["#FF00FF", "#00FFFF", "#FFFF00"] },
+    { id: "pastel", name: "Pastel", colors: ["#FFB5A7", "#FCD5CE", "#F8EDEB"] },
+];
+```
+
+---
+
+## ⚙️ Server (Backend) Yapısı
+
+### Ana Sunucu Dosyası
+
+#### `server/server.ts`
+Express sunucusunun giriş noktası. Tüm konfigürasyonları ve rotaları birleştirir.
+
+```ts
+import "dotenv/config";
+import express, { Request, Response } from 'express';
+import cors from "cors";
+import connectDB from "./configs/db.js";
+import session from 'express-session'
+import MongoStore from 'connect-mongo'
+
+// Veritabanı bağlantısı
+await connectDB()
+
+const app = express();
+
+// Middleware'ler
+app.use(cors({
+    origin: ['http://localhost:5173'],
+    credentials: true
+}))
+app.use(express.json());
+
+// Oturum yapılandırması
+app.use(session({
+    secret: process.env.SESSION_SECRET as string,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {maxAge: 1000 * 60 * 60 * 24 * 7}, // 7 gün
+    store: MongoStore.create({
+        mongoUrl: process.env.MONGODB_URI as string,
+        collectionName: 'sessions'
+    })
+}))
+
+// API Rotaları
+app.use('/api/auth', AuthRouter)
+app.use('/api/thumbnail', ThumbnailRouter)
+app.use('/api/user', UserRouter)
+
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+    console.log(`Server is running at http://localhost:${port}`);
+});
+```
 
 ---
 
