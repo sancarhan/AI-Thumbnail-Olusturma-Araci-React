@@ -237,6 +237,338 @@ MIT License
 
 
 
+---
+
+### Veritabanı Modelleri
+
+#### `server/models/User.ts`
+Kullanıcı veritabanı modeli.
+
+```ts
+export interface IUser extends Document{
+    name: string;
+    email: string;
+    password?: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+}
+
+const UserSchema = new mongoose.Schema<IUser>({
+ name: {type: String, required: true, trim: true},
+ email: {type: String, required: true, trim: true, unique: true, lowercase: true},
+ password: {type: String, required: true,}
+},{timestamps: true})
+```
+
+#### `server/models/Thumbnail.ts`
+Thumbnail veritabanı modeli.
+
+```ts
+export interface IThumbnail extends Document {
+    userId: string;
+    title: string;
+    description?: string;
+    style: "Bold & Graphic" | "Tech/Futuristic" | "Minimalist" | "Photorealistic" | "Illustrated";
+    aspect_ratio?: "16:9" | "1:1" | "9:16";
+    color_scheme?: "vibrant" | "sunset" | "forest" | "neon" | "purple" | "monochrome" | "ocean" | "pastel";
+    text_overlay?: boolean;
+    image_url?: string;
+    prompt_used?: string;
+    user_prompt?: string;
+    isGenerating?: boolean;
+}
+```
+
+---
+
+### Controllers (İş Mantığı)
+
+#### `server/controllers/AuthControllers.ts`
+Kullanıcı kimlik doğrulama işlemlerini yönetir.
+
+**Fonksiyonlar:**
+
+1. `registerUser(req, res)` - Yeni kullanıcı kaydı
+```ts
+export const registerUser = async (req: Request, res: Response) => {
+  // 1. Email kontrolü
+  const user = await User.findOne({ email });
+  if (user) return res.status(400).json({ message: "Kullanıcı zaten mevcut" });
+
+  // 2. Şifre hash'leme
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+
+  // 3. Kullanıcı oluşturma
+  const newUser = new User({ name, email, password: hashedPassword });
+  await newUser.save();
+
+  // 4. Oturum ayarlama
+  req.session.isLoggedIn = true;
+  req.session.userId = newUser._id;
+
+  return res.json({ message: "Hesap başarıyla oluşturuldu", user: {...} });
+};
+```
+
+2. `loginUser(req, res)` - Kullanıcı girişi
+```ts
+export const loginUser = async (req: Request, res: Response) => {
+  // 1. Email ile kullanıcı bulma
+  const user = await User.findOne({ email });
+  if (!user) return res.status(400).json({ message: "Şifre veya email hatalı" });
+
+  // 2. Şifre karşılaştırma
+  const isPasswordCorrect = await bcrypt.compare(password, user.password);
+  if (!isPasswordCorrect) return res.status(400).json({ message: "Şifre veya email hatalı" });
+
+  // 3. Oturum ayarlama
+  req.session.isLoggedIn = true;
+  req.session.userId = user._id;
+
+  return res.json({ message: "Giriş başarılı", user: {...} });
+};
+```
+
+3. `logoutUser(req, res)` - Kullanıcı çıkışı
+```ts
+export const logoutUser = async (req: Request, res: Response) => {
+  req.session.destroy((error: any) => {
+    if (error) return res.status(500).json({ message: error.message });
+  });
+  return res.json({ message: "Çıkış Yapıldı" });
+};
+```
+
+4. `verifyUser(req, res)` - Oturum doğrulama
+```ts
+export const verifyUser = async (req: Request, res: Response) => {
+  const { userId } = req.session;
+  const user = await User.findById(userId).select("-password");
+  if (!user) return res.status(400).json({ message: "Geçersiz kullanıcı" });
+  return res.json({ user });
+};
+```
+
+---
+
+#### `server/controllers/ThumbnailController.ts`
+Thumbnail oluşturma ve silme işlemlerini yönetir. OpenAI DALL-E 3 entegrasyonu buradadır.
+
+**Prompt Yapılandırması:**
+```ts
+const stylePrompts: Record<string, string> = {
+ 'Bold & Graphic': 'Eye-catching thumbnail, bold typography, vibrant colors, impactful facial expressions, dramatic lighting, high contrast, click-worthy composition, professional style',
+
+ 'Tech/Futuristic': 'Futuristic thumbnail, sleek modern design, digital UI elements, glowing highlights, holographic effects, cyber-tech aesthetics, sharp lighting, high-tech atmosphere',
+
+ 'Minimalist': 'Minimalist thumbnail, clean layout, simple shapes, limited color palette, ample negative space, modern flat design, clear focal point',
+
+ 'Photorealistic': 'Photorealistic thumbnail, ultra-realistic lighting, natural skin tones, candid moment, DSLR-style photography, lifestyle realism, shallow depth of field',
+
+ 'Illustrated': 'Illustrated thumbnail style, custom digital illustration, stylized characters, bold outlines, vibrant colors, creative cartoon or vector art style',
+}
+
+const colorSchemeDescriptions: Record<string, string> = {
+ vibrant: 'vibrant and energetic colors, high saturation, strong contrast, eye-catching color palette',
+ sunset: 'warm sunset tones, orange pink and purple hues, soft transitions, cinematic glow',
+ forest: 'natural green tones, earth colors, calm and organic palette, fresh atmosphere',
+ neon: 'neon glow effects, electric blue and pink tones, cyberpunk lighting, high contrast glow',
+ purple: 'purple-dominant color palette, magenta and violet tones, modern and stylish atmosphere',
+ monochrome: 'black and white color scheme, high contrast, dramatic lighting, timeless aesthetic',
+ ocean: 'cool blue and turquoise tones, water-themed color palette, fresh and clean atmosphere',
+ pastel: 'soft pastel colors, low saturation, gentle tones, calm and friendly aesthetic', 
+}
+```
+
+**`generateThumbnail(req, res)` Fonksiyonu:**
+
+Thumbnail oluşturma sürecinin adımları:
+
+```ts
+export const generateThumbnail = async (req: Request, res: Response)=>{
+ try {
+  const {userId} = req.session;
+  const { title, prompt, style, aspect_ratio, color_scheme, text_overlay } = req.body;
+
+  // 1. MongoDB'de thumbnail belgesi oluştur
+  const thumbnail = await Thumbnail.create({
+   userId,
+   title,
+   prompt_used: prompt,
+   user_prompt: prompt,
+   aspect_ratio,
+   color_scheme,
+   text_overlay,
+   isGenerating: true  // Oluşturuluyor durumu
+  })
+
+  // 2. Prompt oluştur
+  let prompt = `${stylePrompts[style]} for: "${title}"`;
+  if (color_scheme) prompt += `. Use a ${colorSchemeDescriptions[color_scheme]} color scheme.`;
+  if (user_prompt) prompt += `. Additional details: ${user_prompt}.`;
+  prompt += ` The thumbnail should be ${aspect_ratio} aspect ratio, visually striking...`;
+  if (text_overlay) prompt += ` Include bold, readable text: "${title}"`;
+
+  // 3. DALL-E 3 ile görsel oluştur
+  const response = await openai.images.generate({
+    model: "dall-e-3",
+    prompt: prompt,
+    size: "1792x1024", // 16:9
+    quality: "standard",
+    n: 1,
+  })
+
+  const imageUrl = response.data[0].url;
+
+  // 4. Görseli Cloudinary'ye yükle
+  const imageResponse = await fetch(imageUrl);
+  const imageBuffer = Buffer.from(await imageResponse.arrayBuffer());
+  const filename = `final-output-${Date.now()}.png`;
+  
+  fs.writeFileSync(filePath, imageBuffer);
+  const uploadResult = await cloudinary.uploader.upload(filePath)
+
+  // 5. Veritabanını güncelle
+  thumbnail.image_url = uploadResult.url;
+  thumbnail.isGenerating = false;
+  await thumbnail.save()
+
+  res.json({message: 'Thumbnail Oluşturuldu', thumbnail})
+  
+  // 6. Yerel dosyayı sil
+  fs.unlinkSync(filePath)
+
+ } catch (error: any) {
+  res.status(500).json({message: error.message || 'Sunucu hatası oluştu'});
+ }
+}
+```
+
+---
+
+#### `server/controllers/UserController.ts`
+Kullanıcının thumbnail'larını getiren fonksiyonlar.
+
+**Fonksiyonlar:**
+
+1. `getUsersThumbnails(req, res)` - Tüm thumbnail'ları getirir
+```ts
+export const getUsersThumbnails = async (req: Request, res: Response) =>{
+  const {userId} = req.session;
+  const thumbnail = await Thumbnail.find({userId}).sort({createdAt: 1})
+  res.json({thumbnail})
+}
+```
+
+2. `getThumbnailbyId(req, res)` - Tek thumbnail getirir
+```ts
+export const getThumbnailbyId = async (req: Request, res: Response) =>{
+  const {userId} = req.session;
+  const {id} = req.params;
+  const thumbnail = await Thumbnail.findOne({userId,_id: id});
+  res.json({thumbnail})
+}
+```
+
+---
+
+### Middleware
+
+#### `server/middlewares/auth.ts`
+API rotalarını koruyan kimlik doğrulama middleware'ı.
+
+```ts
+import { Request, Response, NextFunction } from 'express';
+
+const protect = (req: Request, res: Response, next: NextFunction) => {
+  const { isLoggedIn, userId } = req.session;
+  
+  if (!isLoggedIn || !userId) {
+    return res.status(401).json({ message: "Giriş yapmanız gerekiyor" });
+  }
+  
+  next();
+};
+
+export default protect;
+```
+
+---
+
+### API Rotaları
+
+#### `server/routes/AuthRoutes.ts`
+```ts
+import express from "express";
+import { registerUser, loginUser, logoutUser, verifyUser } from "../controllers/AuthControllers.js";
+
+const AuthRouter = express.Router();
+
+AuthRouter.post('/register', registerUser);
+AuthRouter.post('/login', loginUser);
+AuthRouter.post('/logout', logoutUser);
+AuthRouter.get('/verify', verifyUser);
+
+export default AuthRouter;
+```
+
+#### `server/routes/ThumbnailRoutes.ts`
+```ts
+import express from "express";
+import { deleteThumbnail, generateThumbnail } from "../controllers/ThumbnailController.js";
+import protect from "../middlewares/auth.js";
+
+const ThumbnailRouter = express.Router();
+
+ThumbnailRouter.post('/generate', protect, generateThumbnail)
+ThumbnailRouter.delete('/delete/:id', protect, deleteThumbnail)
+
+export default ThumbnailRouter;
+```
+
+#### `server/routes/UserRoutes.ts`
+```ts
+import express from 'express';
+import { getThumbnailbyId, getUsersThumbnails } from '../controllers/UserController.js';
+import protect from '../middlewares/auth.js';
+
+const UserRouter = express.Router();
+
+UserRouter.get('/thumbnails', protect, getUsersThumbnails)
+UserRouter.get('/thumbnail/:id', protect, getThumbnailbyId)
+
+export default UserRouter;
+```
+
+---
+
+## 📝 API Endpoints
+
+### Kimlik Doğrulama
+
+| Method | Endpoint | Açıklama | Request Body |
+|--------|----------|----------|--------------|
+| POST | `/api/auth/register` | Yeni kullanıcı kaydı | `{name, email, password}` |
+| POST | `/api/auth/login` | Kullanıcı girişi | `{email, password}` |
+| POST | `/api/auth/logout` | Kullanıcı çıkışı | - |
+| GET | `/api/auth/verify` | Oturum doğrulama | (Çerez ile) |
+
+### Thumbnail
+
+| Method | Endpoint | Açıklama | Koruma |
+|--------|----------|----------|--------|
+| POST | `/api/thumbnail/generate` | Yeni thumbnail oluştur | ✅ |
+| DELETE | `/api/thumbnail/delete/:id` | Thumbnail sil | ✅ |
+
+### Kullanıcı
+
+| Method | Endpoint | Açıklama | Koruma |
+|--------|----------|----------|--------|
+| GET | `/api/user/thumbnails` | Tüm thumbnail'lar | ✅ |
+| GET | `/api/user/thumbnail/:id` | Thumbnail detayı | ✅ |
+
+---
 
 
 
