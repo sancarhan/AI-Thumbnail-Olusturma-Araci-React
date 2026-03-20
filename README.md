@@ -13,7 +13,6 @@
 </ul>
 
 
-sdfsdfdsfsdf
 <h2>✨ Özellikler</h2>
 <ul>
   <li>🤖 AI destekli thumbnail üretimi</li>
